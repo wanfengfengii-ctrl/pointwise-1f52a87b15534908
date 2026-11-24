@@ -2,6 +2,16 @@
   "version": 1,
   "kind": "cli",
   "setup": [],
-  "verify": ["python3", "-B", "check_project.py"],
-  "demo": ["python3", "-B", "-m", "pulse_demo"]
+  "verify": [
+    "python3",
+    "-B",
+    "first_pulse_fixture.py",
+    "verify"
+  ],
+  "demo": [
+    "python3",
+    "-B",
+    "first_pulse_fixture.py",
+    "demo"
+  ]
 }

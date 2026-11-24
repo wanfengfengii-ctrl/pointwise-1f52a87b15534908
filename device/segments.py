@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from device.pulses import PulseIdentity, get_active_pulse, get_pulse
+from device.pre_capture import guards_for_completed_segment
 from device.retention import is_pulse_retained
 from storage import transaction
 
@@ -99,4 +100,5 @@ def record_segment(connection, pulse, position, raw_code, origin):
             INSERT INTO device_segments (recorder, pulse, position, raw_code, slot, source)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (*pulse.key, hex(position), hex(raw_code), origin.slot, origin.source))
+        guards_for_completed_segment(connection, physical, pulse)
         return incoming

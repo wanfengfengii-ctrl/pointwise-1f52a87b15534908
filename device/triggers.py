@@ -2,6 +2,7 @@ from device.pulses import (
     ensure_pulse_store, get_active_pulse, get_pulse, remember_pulse, retire_pulse,
     set_active_pulse,
 )
+from device.pre_capture import ensure_device_pre_store
 from device.retention import ensure_retention_store, is_pulse_retained
 from device.segments import ensure_segment_store
 from storage import transaction
@@ -12,6 +13,7 @@ def initialize_device(connection):
         ensure_pulse_store(connection)
         ensure_retention_store(connection)
         ensure_segment_store(connection)
+        ensure_device_pre_store(connection)
 
 
 def trigger_pulse(connection, pulse, slot, profile):

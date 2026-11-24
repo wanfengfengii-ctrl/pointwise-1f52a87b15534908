@@ -8,6 +8,7 @@ from capture.orders import (
     CaptureOrder, ensure_order_store, get_order, save_new_order, update_custody,
     validate_order_id, validate_shift,
 )
+from capture.pre_orders import ensure_pre_order_store, get_pre_order
 from capture.release import release_after_publish
 from device.retention import RetentionReplyLost, query_retention, request_retention
 from spec.initialize import initialize_profiles
@@ -32,6 +33,7 @@ def initialize_station(connection):
         ensure_order_store(connection)
         ensure_ledger_store(connection)
         ensure_result_store(connection)
+        ensure_pre_order_store(connection)
 
 
 def refresh_custody(station, recorder, order, *, lose_reply=False, hide_status=False):
@@ -64,6 +66,9 @@ def register(station, recorder, order_id, pulse, segment_count, profile_key, *,
     if recorder is not None:
         require_idle(recorder)
     with transaction(station, write=True):
+        ensure_pre_order_store(station)
+        if get_pre_order(station, order_id) is not None:
+            raise OrderConflict('order number is reserved by a pre-capture ticket')
         order = get_order(station, order_id)
         if order is None:
             profile = get_version(station, profile_key)
